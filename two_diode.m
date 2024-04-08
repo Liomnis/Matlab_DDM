@@ -1,12 +1,12 @@
 clc
 clear
-%% datos del catálogo
+%% datos del catÃ¡logo
 [File_importpi,PathName_importpi] = uigetfile...
     ('*.dat;*.txt','Seleccione el archivo con los datos');
 if isequal(File_importpi,0)
     return
 else
-    % copiar a la carpeta temp del usuario
+    % copiar a la caRsheta temp del usuario
     copyfile([PathName_importpi,File_importpi],[tempdir,File_importpi])
     % cargo el pi txt
     filename = fullfile([tempdir,File_importpi]);
@@ -40,32 +40,32 @@ Tn = 298.15; % temp. de referencia 25+273=298
 dt = Tn - T;
 G = 1000; % irradiancia de trabajo del panel
 Gn = 1000; % irradiancia de referencia 1000 W/m2
-%% constantes físicas
-q = 1.60e-19 ; % carga del Electrón
+%% constantes fÃ­sicas
+q = 1.60e-19 ; % carga del ElectrÃ³n
 K = 1.38e-23 ; % constante de Boltzman
 %% condiciones iniciales
 p = 2.2;
 n1 = 1; % Se asume
 n2 = 1.2; % Se asume
 Vt = (Ns*K*T)/q;
-Io = (Iscn+Ki*dt)/(exp((Vocn+Kv*dt)/Vt)-1);% Io1 = Io2 % Ecuación 8
-Ipv = (Iscn+Ki*dt)*(G/Gn);
+Io = (Iscn+Ki*dt)/(exp((Vocn+Kv*dt)/Vt)-1);% Io1 = Io2 % EcuaciÃ³n 8
+Ish = (Iscn+Ki*dt)*(G/Gn);
 TolP = 0.0009;
-errorP = 1;
+erroRsh = 1;
 marca = 0;
 % global marcaPlot
 marcaPlot = 0;
 Rs0 = 0.0;
 Rs = Rs0;%
-Rp0 = (Vmpp/(Iscn-Impp))-((Vocn-Vmpp)/Impp); % Ecuación 11
-Rp = Rp0;%
+Rsh0 = (Vmpp/(Iscn-Impp))-((Vocn-Vmpp)/Impp); % EcuaciÃ³n 11
+Rsh = Rsh0;%
 paso = .1;
 cont2 = 1;
-errorP_ant=100;
+erroRsh_ant=100;
 %% ecuaciones preliminares
-while (errorP >= TolP)
+while (erroRsh >= TolP)
     Rs_final = Rs;
-    Rp_final = Rp;
+    Rsh_final = Rsh;
     cont = 1;
     for V = 0: paso: Vocn
         x = Impp; % valor inicial de I
@@ -73,14 +73,14 @@ while (errorP >= TolP)
         count = 0; % contador de iteraciones
         error = 1; %derivada de la ftn
         %ecuaciones preliminares
-        f1 = @(x) Ipv-((Iscn+Ki*dt)/(exp((Vocn+Kv*dt)/Vt)-1))...
+        f1 = @(x) Ish-((Iscn+Ki*dt)/(exp((Vocn+Kv*dt)/Vt)-1))...
             *(exp((V+x*Rs)/(n1*Vt))-1)-((Iscn+Ki*dt)...
             /(exp((Vocn+Kv*dt)/Vt)-1))*(exp((V+x*Rs)/...
-            (n2*Vt))-1)-((V+x*Rs)/Rp)-x; % Ecuación 1
+            (n2*Vt))-1)-((V+x*Rs)/Rsh)-x; % EcuaciÃ³n 1
         f = f1(x);% evaluo f para el valor inicial de I
         fini_deriv = diff(sym(f1),1);
 
-        fprintf('iter       V           I          f(I)        errorI       P         errorP        Rs          Rp \n')
+        fprintf('iter       V           I          f(I)        errorI       P         erroRsh        Rs          Rsh \n')
         while  ((error > Tol || abs(f) > Tol) && x > 0)%
             count = count + 1;
             fprime = eval(fini_deriv);
@@ -88,17 +88,17 @@ while (errorP >= TolP)
             error = abs(x-xnew); 
             x = xnew;
             f = f1(x);% evaluo el nuevo valor de f(I)
-            P = V * x;  % calulo la potencia máxima PmaxC 
+            P = V * x;  % calulo la potencia mÃ¡xima PmaxC 
             fprintf('%3i%12.4f%12.4f%12.4f%12.4f%12.4f%12.4f%12.3f%12.4f \n',...
-                count,V,x,f,error,P,errorP,Rs,Rp)
+                count,V,x,f,error,P,erroRsh,Rs,Rsh)
         end
         I_array(cont) = x;
         V_array(cont) = V;
         P_array(cont) = P;
         cont = cont+1;
     end
-    PmaxC = max(P_array); % encontrar el valor máximo de PmaxC
-    errorP = abs(PmaxC - PmaxE); % Error = |PmaxC-PmaxE|
+    PmaxC = max(P_array); % encontrar el valor mÃ¡ximo de PmaxC
+    erroRsh = abs(PmaxC - PmaxE); % Error = |PmaxC-PmaxE|
     %%
     figure(22)
     plot(V_array,P_array,'b');
@@ -118,47 +118,47 @@ while (errorP >= TolP)
     %%
     if marca == 0
         Rs = Rs + 0.001;
-    elseif (errorP<0.1)||(errorP_ant~=100)||(errorP_ant-errorP)<0%si el error aumenta se detiene el programa
+    elseif (erroRsh<0.1)||(erroRsh_ant~=100)||(erroRsh_ant-erroRsh)<0%si el error aumenta se detiene el programa
         Rs = Rs + 0.001;
-        msgbox('Se alcanzó el menor error posible','Fin de programa')
+        msgbox('Se alcanzÃ³ el menor error posible','Fin de programa')
         break
-        errorP_ant = errorP;% guardo el valor anterior del error
-    elseif errorP > 4
+        erroRsh_ant = erroRsh;% guardo el valor anterior del error
+    elseif erroRsh > 4
         Rs = Rs + 0.1;
-    elseif errorP >= 0.1
+    elseif erroRsh >= 0.1
         Rs = Rs + 0.001;
     end
     marca = 1;
-    Rp = (Vmpp+Impp*Rs)/(Iscn-Io*(exp((Vmpp+Impp*Rs)/Vt)+exp((Vmpp+Impp*Rs)/((p-1)*Vt))+2)-(PmaxE/Vmpp)); % Ecuación 10
-    if Rp <= 0
-        errordlg('Programa detenido Rp <= 0','ERROR')
+    Rsh = (Vmpp+Impp*Rs)/(Iscn-Io*(exp((Vmpp+Impp*Rs)/Vt)+exp((Vmpp+Impp*Rs)/((p-1)*Vt))+2)-(PmaxE/Vmpp)); % EcuaciÃ³n 10
+    if Rsh <= 0
+        errordlg('Programa detenido Rsh <= 0','ERROR')
         break
     end
     PmaxC_array(cont2) = PmaxC;
     Rs_array(cont2) = Rs;
-    Rp_array(cont2) = Rp;
-    errorP_array(cont2) = errorP;
+    Rsh_array(cont2) = Rsh;
+    erroRsh_array(cont2) = erroRsh;
     cont2 = cont2 + 1;
 end
 fprintf(' \n')
-fprintf('\nPmaxC = %g, errorP = %g, Rs = %g, Rp = %g, Io = %g, Ipv = %g \n',...
-    max(P_array),errorP,Rs_final,Rp_final,Io,Ipv)
+fprintf('\nPmaxC = %g, erroRsh = %g, Rs = %g, Rsh = %g, Io = %g, Ish = %g \n',...
+    max(P_array),erroRsh,Rs_final,Rsh_final,Io,Ish)
 %% salvo variables de salida V I P
 save (['I_',num2str(Tt),'_',num2str(G),'_',modelo,'.mat'], 'I_array')
 save (['V_',num2str(Tt),'_',num2str(G),'_',modelo,'.mat'], 'V_array')
 save (['P_',num2str(Tt),'_',num2str(G),'_',modelo,'.mat'], 'P_array')
 save (['PmaxC_',num2str(Tt),'_',num2str(G),'_',modelo,'.mat'], 'PmaxC_array')
 save (['Rs_',num2str(Tt),'_',num2str(G),'_',modelo,'.mat'], 'Rs_array')
-save (['Rp_',num2str(Tt),'_',num2str(G),'_',modelo,'.mat'], 'Rp_array')
-save (['errorP_',num2str(Tt),'_',num2str(G),'_',modelo,'.mat'], 'errorP_array')
+save (['Rsh_',num2str(Tt),'_',num2str(G),'_',modelo,'.mat'], 'Rsh_array')
+save (['erroRsh_',num2str(Tt),'_',num2str(G),'_',modelo,'.mat'], 'erroRsh_array')
 %
 load (['I_',num2str(Tt),'_',num2str(G),'_',modelo,'.mat'], 'I_array')
 load (['V_',num2str(Tt),'_',num2str(G),'_',modelo,'.mat'], 'V_array')
 load (['P_',num2str(Tt),'_',num2str(G),'_',modelo,'.mat'], 'P_array')
 load (['PmaxC_',num2str(Tt),'_',num2str(G),'_',modelo,'.mat'], 'PmaxC_array')
 load (['Rs_',num2str(Tt),'_',num2str(G),'_',modelo,'.mat'], 'Rs_array')
-load (['Rp_',num2str(Tt),'_',num2str(G),'_',modelo,'.mat'], 'Rp_array')
-load (['errorP_',num2str(Tt),'_',num2str(G),'_',modelo,'.mat'], 'errorP_array')
+load (['Rsh_',num2str(Tt),'_',num2str(G),'_',modelo,'.mat'], 'Rsh_array')
+load (['erroRsh_',num2str(Tt),'_',num2str(G),'_',modelo,'.mat'], 'erroRsh_array')
 
 %% grafico
 figure(1)
@@ -169,7 +169,7 @@ xlabel('Voltage (V)');
 ylabel('Current (A)');
 % title('I-V Characteristic');
 title({'I-V Characteristic';...
-    ['Temperature: ',num2str(Tt),' °C'];['Irradiance: ',...
+    ['Temperature: ',num2str(Tt),' Â°C'];['Irradiance: ',...
     num2str(1000),' W/m^2']});
 % text(4,max(I_array)+.3,{[num2str(G),' W/m^2']},'HorizontalAlignment','left')
 hold all
@@ -181,7 +181,7 @@ xlabel('Voltage (V)');
 ylabel('Power (W)');
 % title('P-V Characteristic');
 title({'P-V Characteristic';...
-    ['Temperature: ',num2str(Tt),' °C'];['Irradiance:',...
+    ['Temperature: ',num2str(Tt),' Â°C'];['Irradiance:',...
     num2str(1000),' W/m^2']});
 % legend('-DynamicLegend','location','Best')
 legend('1000 W/m^2','800 W/m^2','600 W/m^2','Location','Best');
@@ -196,7 +196,7 @@ ylabel('Current (A)');
 zlabel('Power (W)');
 % title('Curves P-I-V');
 title({'P-I-V Characteristic';...
-    ['Temperature: ',num2str(Tt),' °C'];['Irradiance:',...
+    ['Temperature: ',num2str(Tt),' Â°C'];['Irradiance:',...
     num2str(1000),' W/m^2']});
 legend('-DynamicLegend','location','Best')
 grid on
@@ -205,12 +205,12 @@ hold on
 % % grafico de superficie
 figure(4)
 [T,G] = meshgrid(0:25:75,200:200:1000);
-Ipv = (Iscn+Ki*(T-Tn)).*(G./Gn);
-surf(G,T,Ipv);
-ylabel('Temperature (°C)');
+Ish = (Iscn+Ki*(T-Tn)).*(G./Gn);
+surf(G,T,Ish);
+ylabel('Temperature (Â°C)');
 xlabel('Irradiance (W/m^2)');
 zlabel('Voltage (V)');
-shading interp
+shading inteRsh
 % colorbar
 % grafico de P vs Rs
 figure(5)
@@ -220,20 +220,20 @@ xlabel('Rs (\Omega)');
 ylabel('Power (W)');
 % title('Curve PmaxC vs Rs');
 title({'P-V Characteristic';...
-    ['Temperature: ',num2str(Tt),' °C'];['Irradiance:',...
+    ['Temperature: ',num2str(Tt),' Â°C'];['Irradiance:',...
     num2str(1000),' W/m^2']});
 % legend('-DynamicLegend','location','Best')
 legend('1000 W/m^2','800 W/m^2','600 W/m^2','Location','Best');
 % text(Vmpp-5, max(P_array)+3,{[num2str(G),' W/m^2']},'HorizontalAlignment','left')
 hold all
-% % grafico de P vs Rp
+% % grafico de P vs Rsh
 figure(6)
-plot(Rp_array,PmaxC_array,'LineWidth',1);
-xlabel('Rp (\Omega)');
+plot(Rsh_array,PmaxC_array,'LineWidth',1);
+xlabel('Rsh (\Omega)');
 ylabel('Power (W)');
-title('Curve PmaxC vs Rp');
+title('Curve PmaxC vs Rsh');
 title({'P-V Characteristic';...
-    ['Tc: ',num2str(Tt),' °C'];['Irradiance:',...
+    ['Tc: ',num2str(Tt),' Â°C'];['Irradiance:',...
     num2str(1000),' W/m^2']});
 legend('-DynamicLegend','location','Best')
 legend('1000 W/m^2','800 W/m^2','600 W/m^2','Location','Best');
@@ -241,12 +241,12 @@ legend('1000 W/m^2','800 W/m^2','600 W/m^2','Location','Best');
 hold all
 % % grafico de error vs Rs
 figure(7)
-plot(Rs_array,errorP_array,'LineWidth',1);
+plot(Rs_array,erroRsh_array,'LineWidth',1);
 xlabel('Rs (\Omega)');
 ylabel('Error');
 % title('Curve Error vs Rs');
 title({'P-V Characteristic';...
-    ['Tc: ',num2str(Tt),' °C'];['Irradiance:',...
+    ['Tc: ',num2str(Tt),' Â°C'];['Irradiance:',...
     num2str(1000),' W/m^2']});
 legend('-DynamicLegend','location','Best')
 legend('1000 W/m^2','800 W/m^2','600 W/m^2','Location','Best');
