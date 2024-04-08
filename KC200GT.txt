@@ -14,7 +14,8 @@ ancho 	990
 	
 pámetros internos calculados	
 Rs	
-Rp	
-n	
+Rsh	
+n1
+n2
 Io	
-Ipv	
+Ish
