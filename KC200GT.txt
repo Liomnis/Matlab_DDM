@@ -12,9 +12,9 @@ Np	1
 largo 	1425
 ancho 	990
 	
-p·metros internos calculados	
-Rs	0.298
-Rp	123.635
-n	1.2
-Io	4.2158e-10
-Ipv	8.21
+p√°metros internos calculados	
+Rs	
+Rp	
+n	
+Io	
+Ipv	
