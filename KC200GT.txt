@@ -1,0 +1,20 @@
+fabricante	Kyocera
+modelo	KC200GT
+Pm	200
+Voc	32.9
+Vpm	26.3
+Imp	7.61
+Isc	8.21
+Ki	0.00318
+Kv	-0.123
+Ns	54
+Np	1
+largo 	1425
+ancho 	990
+	
+pámetros internos calculados	
+Rs	0.298
+Rp	123.635
+n	1.2
+Io	4.2158e-10
+Ipv	8.21
