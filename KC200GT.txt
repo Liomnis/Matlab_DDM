@@ -1,21 +1,24 @@
-fabricante	Kyocera
-modelo	KC200GT
-Pm	200
-Voc	32.9
-Vpm	26.3
-Imp	7.61
-Isc	8.21
-Ki	0.00318
-Kv	-0.123
-Ns	54
-Np	1
-largo 	1425
-ancho 	990
+fabricante	HELIENE
+modelo	HEE215M
+Pmpp	250
+Voc	37.4
+Vmpp	30.8
+Impp	8.12
+Isc	8.67
+Ki	0.006104
+Kv	-0.12716
+Ns	60
+Np	0
+largo	0.156
+ancho	0.156
+NOCT	45
+eff	17
 	
 pámetros internos calculados	
-Rs	
-Rsh	
-n1
-n2
-Io	
-Ish
+Rs	0.229
+Rsh	233.569
+n1	1
+n2	1.2
+Io1	2.57555e-10
+Io2	2.57555e-10
+Iph	8.67
