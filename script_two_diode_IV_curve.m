@@ -158,7 +158,7 @@ fclose(fileID);
 currentDateTime = datetime('now', 'Format', 'yyyyMMdd_HHmmss');
 % Name of txt file
 GT = char({[num2str(round(G)),'_',num2str(round(Tt))]});
-fileName = ['_points_of_Curve_IV_',GT,char(currentDateTime), '_.txt'];
+fileName = ['_points_of_Curve_IV_',GT,'_',char(currentDateTime),'_.txt'];
 % Abrir el archivo para escritura
 fid = fopen(fileName, 'w');
 % Verificar si el archivo se abrió correctamente
