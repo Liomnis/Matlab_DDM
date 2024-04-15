@@ -14,7 +14,7 @@ ancho	0.156
 NOCT	45
 eff	17
 	
-p·metros internos calculados	
+p√°metros internos calculados	
 Rs	0.229
 Rsh	233.569
 n1	1
